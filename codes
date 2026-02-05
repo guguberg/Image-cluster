@@ -1,0 +1,114 @@
+import numpy as np
+from matplotlib import pyplot as plt
+from sklearn import datasets
+from sklearn.cluster import KMeans
+
+# Step 2: Load the Digits Dataset
+digits = datasets.load_digits()
+print(digits.DESCR)  # Data description
+
+# Step 3: Explore the Data
+print(digits.data)     # Pixel data (64 values per image)
+print(digits.target)   # Target labels (0–9)
+
+# Step 4: Visualize a Sample Image
+plt.gray()
+plt.matshow(digits.images[100])
+plt.show()
+
+print("Label for image 100:", digits.target[100])  # Should be 4
+
+# Optional: Show multiple images
+fig = plt.figure(figsize=(6, 6))
+fig.subplots_adjust(left=0, right=1, bottom=0, top=1,
+                    hspace=0.05, wspace=0.05)
+for i in range(64):
+    ax = fig.add_subplot(8, 8, i+1, xticks=[], yticks=[])
+    ax.imshow(digits.images[i], cmap=plt.cm.binary, interpolation='nearest')
+    ax.text(0, 7, str(digits.target[i]))
+plt.show()
+
+# Step 6–7: Create a KMeans Model (10 Clusters for digits 0–9)
+model = KMeans(n_clusters=10, random_state=42)
+
+# Step 8: Fit the Model
+model.fit(digits.data)
+
+# Step 9: Visualize the Cluster Centers (Centroids)
+fig = plt.figure(figsize=(8, 3))
+fig.suptitle('Cluster Center Images', fontsize=14, fontweight='bold')
+
+# Step 10–11: Display the Cluster Centers as Images
+for i in range(10):
+    ax = fig.add_subplot(2, 5, 1 + i)
+    ax.imshow(model.cluster_centers_[i].reshape((8, 8)), cmap=plt.cm.binary)
+plt.show()
+
+# Step 15–17: Testing Your Model with New Samples
+# Example: Pretend these are 8x8 “drawn” digits from test.html
+# (You can replace with your own 2D arrays)
+new_samples = np.array([
+    [0.0,0.0,5.0,13.0,9.0,1.0,0.0,0.0,
+     0.0,0.0,13.0,15.0,10.0,15.0,5.0,0.0,
+     0.0,3.0,15.0,2.0,0.0,11.0,8.0,0.0,
+     0.0,4.0,12.0,0.0,0.0,8.0,8.0,0.0,
+     0.0,5.0,8.0,0.0,0.0,9.0,8.0,0.0,
+     0.0,4.0,11.0,0.0,1.0,12.0,7.0,0.0,
+     0.0,2.0,14.0,5.0,10.0,12.0,0.0,0.0,
+     0.0,0.0,6.0,13.0,10.0,0.0,0.0,0.0],
+
+    [0.0,0.0,0.0,0.0,6.0,13.0,10.0,0.0,
+     0.0,0.0,0.0,7.0,15.0,10.0,0.0,0.0,
+     0.0,0.0,0.0,8.0,16.0,6.0,0.0,0.0,
+     0.0,0.0,4.0,16.0,16.0,6.0,0.0,0.0,
+     0.0,0.0,12.0,16.0,16.0,8.0,0.0,0.0,
+     0.0,0.0,0.0,4.0,14.0,10.0,0.0,0.0,
+     0.0,0.0,0.0,4.0,16.0,6.0,0.0,0.0,
+     0.0,0.0,0.0,6.0,15.0,4.0,0.0,0.0],
+
+    [0.0,0.0,4.0,12.0,12.0,8.0,0.0,0.0,
+     0.0,2.0,16.0,15.0,8.0,4.0,0.0,0.0,
+     0.0,4.0,15.0,2.0,0.0,0.0,0.0,0.0,
+     0.0,0.8,8.0,0.0,0.0,0.0,0.0,0.0,
+     0.0,0.0,9.0,0.0,0.0,0.0,0.0,0.0,
+     0.0,0.1,14.0,5.0,2.0,0.0,0.0,0.0,
+     0.0,0.3,16.0,16.0,14.0,10.0,1.0,0.0,
+     0.0,0.0,0.0,3.0,8.0,12.0,4.0,0.0],
+
+    [0.0,0.0,0.0,3.0,14.0,9.0,0.0,0.0,
+     0.0,0.0,5.0,16.0,16.0,10.0,0.0,0.0,
+     0.0,0.0,13.0,14.0,16.0,6.0,0.0,0.0,
+     0.0,0.4,16.0,12.0,16.0,6.0,0.0,0.0,
+     0.0,0.1,16.0,11.0,13.0,5.0,0.0,0.0,
+     0.0,0.0,8.0,16.0,10.0,0.0,0.0,0.0,
+     0.0,0.0,1.0,11.0,16.0,2.0,0.0,0.0,
+     0.0,0.0,0.0,2.0,13.0,2.0,0.0,0.0]
+])
+
+# Step 16: Predict Labels
+new_labels = model.predict(new_samples)
+
+# Step 17: Map the Cluster Labels to Real Digits
+for i in range(len(new_labels)):
+    if new_labels[i] == 0:
+        print(0, end='')
+    elif new_labels[i] == 1:
+        print(9, end='')
+    elif new_labels[i] == 2:
+        print(2, end='')
+    elif new_labels[i] == 3:
+        print(1, end='')
+    elif new_labels[i] == 4:
+        print(6, end='')
+    elif new_labels[i] == 5:
+        print(8, end='')
+    elif new_labels[i] == 6:
+        print(4, end='')
+    elif new_labels[i] == 7:
+        print(5, end='')
+    elif new_labels[i] == 8:
+        print(7, end='')
+    elif new_labels[i] == 9:
+        print(3, end='')
+
+print("\nPrediction complete!")
